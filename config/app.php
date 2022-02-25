@@ -174,7 +174,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        LaravelFCM\FCMServiceProvider::class,
+        Kreait\Laravel\Firebase\ServiceProvider::class,
+
 
     ],
 
