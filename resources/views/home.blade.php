@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
-    <form  method="post" id="myForm">
-        @csrf
+    <form   id="myForm">
+        <input type="hidden"  name="receiver_id" id="r_id">
+
         <div class="container page-content page-container" id="page-content">
             <div class="padding">
 
@@ -15,40 +16,18 @@
                             @endforeach
                         </ul>
                     </div>
-                    <div class="col-md-6 msgs">
-                        <div class="card card-bordered">
-                            <div class="card-header">
-                                <h4 class="card-title"><strong>Chat</strong></h4>
-                                <a class="btn btn-xs btn-secondary" href="#" data-abc="true">Let's Chat App</a>
+                    <div class="col-md-6 ">
+                        <div class="card card-bordered messages">
+                            <div class="card card-bordered">
+                                <div class="card-header">
+                                    <h4 class="card-title"><strong>Chat</strong></h4>
+                                    <a class="btn btn-xs btn-secondary" href="#" data-abc="true">Let's Chat App</a>
+                                </div>
+                                <div class="ps-container ps-theme-default ps-active-y text-center" id="chat-content"
+                                     style="overflow-y: scroll !important; height:400px !important;">
+                                    <h3>Let talk 🙂</h3>
+                                </div>
                             </div>
-                            <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
-                                 style="overflow-y: scroll !important; height:400px !important;">
-                                @if($chats  != null)
-                                    @foreach( $chats as $key => $value)
-                                        @if(auth()->user()->id == $value['sender_id'])
-                                            <div class="media media-chat media-chat-reverse">
-                                                <div class="media-body">
-                                                    <p>{{ $value['message'] }}</p>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="media media-chat"><img class="avatar"
-                                                                               src="https://img.icons8.com/color/36/000000/administrator-male.png"
-                                                                               alt="...">
-                                                <div class="media-body">
-                                                    <p>{{ $value['message'] }}</p>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-                        <div class="publisher bt-1 border-light">
-                            <input class="publisher-input" type="text" placeholder="Write something"
-                                   name="message">
-                            <button type="submit" class="publisher-btn text-info" href="#" data-abc="true"><i
-                                    class="fa fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -59,20 +38,44 @@
 @section('scripts')
     <script>
         $('body').on('click', '.get_user', function () {
+
             let receiver_id = $(this).attr('data-id')
+            $('#r_id').val(receiver_id);
             $.ajax({
                 url: "{{ route('list') }}",
-                type: "get",
-                data: "&receiver_id=" + receiver_id,
+                type: "post",
+                data: {
+                    _token: $('input[name="_token"]').val(),
+                    receiver_id: receiver_id,
+                },
                 success:function (data)
                 {
-                     $('.msgs').html(data)
+                     $('.messages').html(data.html);
                 }
             })
         })
 
-        $('body').on('submit','#myForm',function (){
-
+        $('body').on('submit','#myForm',function (e){
+            e.preventDefault();
+           let reciever_id =  $('#r_id').val();
+           let message = $('.msg').val();
+            var form = $('#myform')[0];
+            var data = new FormData(form);
+           $.ajax({
+                 url:"{{ route('home.createChat') }}",
+                 type:'post',
+                 data:{
+                     message:message,
+                     _token: $('input[name="_token"]').val(),
+                     reciever_id:reciever_id,
+                 },
+                 success:function (data)
+                 {
+                     $('.messages').scrollTop($('.messages')[0].scrollHeight);
+                     $('.lst_p p:last').after('<p>'+data+'</p>');
+                      $('.msg').val('');
+                 }
+           })
         })
     </script>
 @endsection

@@ -329,6 +329,17 @@
         .text-info {
             color: #48b0f7 !important
         }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px 10px;
+            background-color: #EEEEEE;
+            border: 1px solid #DDDDDD;
+            border-radius: 15px;
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
@@ -386,7 +397,6 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
             @yield('content')
         </main>
