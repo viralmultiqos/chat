@@ -7,25 +7,26 @@
 
                 <div class="row container d-flex justify-content-center">
                     <div class="col-md-6">
-                        <select class="form-control mb-2" id="r_id" name="receiver_id">
+                        <select class="form-control mb-2" id="r_id" name="receiver_id" >
                             @foreach( $users as $user)
+                                @if($user->id !== auth()->user()->id)
                                 <option value="{{ $user->id }}"> {{ $user->name }} </option>
+                                @endif
                             @endforeach
                         </select>
                         <div class="card card-bordered">
                             <div class="card-header">
-                                <h4 class="card-title"><strong>Chat</strong></h4> <a class="btn btn-xs btn-secondary"
-                                                                                     href="#" data-abc="true">Let's Chat
-                                    App</a>
+                                <h4 class="card-title"><strong>Chat</strong></h4>
+                                <a class="btn btn-xs btn-secondary"  href="#" data-abc="true">Let's Chat App</a>
                             </div>
                             <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
                                  style="overflow-y: scroll !important; height:400px !important;">
-
-                                        @foreach( $chats as $chat)
-                                            @if(auth()->user()->id == $chat->sender_id)
+                                        @if($chats  != null)
+                                        @foreach( $chats as $key => $value)
+                                            @if(auth()->user()->id == $value['sender_id'])
                                         <div class="media media-chat media-chat-reverse">
                                             <div class="media-body">
-                                                <p>{{ $chat->message }}</p>
+                                                <p>{{ $value['message'] }}</p>
                                             </div>
                                         </div>
                                         @else
@@ -33,12 +34,12 @@
                                                                                src="https://img.icons8.com/color/36/000000/administrator-male.png"
                                                                                alt="...">
                                                 <div class="media-body">
-                                            <p>{{ $chat->message }}</p>
+                                            <p>{{ $value['message'] }}</p>
                                                 </div>
                                             </div>
-                                        @endif()
+                                        @endif
                                         @endforeach
-
+                                @endif
                             </div>
                         </div>
                         <div class="publisher bt-1 border-light">
@@ -52,5 +53,4 @@
                 </div>
             </div>
     </form>
-
 @endsection
